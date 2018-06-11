@@ -3,17 +3,25 @@ package com.udacity.sandwichclub;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.udacity.sandwichclub.model.Sandwich;
 import com.udacity.sandwichclub.utils.JsonUtils;
 
+import java.util.List;
+
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "extra_position";
     private static final int DEFAULT_POSITION = -1;
+
+    private Sandwich mSandwich;
+
+    private TextView mAlsoKnownAs, mIngredients, mPlaceOfOrigin, mDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +29,11 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         ImageView ingredientsIv = findViewById(R.id.image_iv);
+
+        mAlsoKnownAs = findViewById(R.id.also_known_tv);
+        mIngredients = findViewById(R.id.ingredients_tv);
+        mPlaceOfOrigin = findViewById(R.id.origin_tv);
+        mDescription = findViewById(R.id.description_tv);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -39,8 +52,8 @@ public class DetailActivity extends AppCompatActivity {
 
         String[] sandwiches = getResources().getStringArray(R.array.sandwich_details);
         String json = sandwiches[position];
-        Sandwich sandwich = JsonUtils.parseSandwichJson(json);
-        if (sandwich == null) {
+        mSandwich = JsonUtils.parseSandwichJson(json);
+        if (mSandwich == null) {
             // Sandwich data unavailable
             closeOnError();
             return;
@@ -48,10 +61,10 @@ public class DetailActivity extends AppCompatActivity {
 
         populateUI();
         Picasso.with(this)
-                .load(sandwich.getImage())
+                .load(mSandwich.getImage())
                 .into(ingredientsIv);
 
-        setTitle(sandwich.getMainName());
+        setTitle(mSandwich.getMainName());
     }
 
     private void closeOnError() {
@@ -60,6 +73,16 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
+        mAlsoKnownAs.setText(joinStringsInList(mSandwich.getAlsoKnownAs()));
+        mIngredients.setText(joinStringsInList(mSandwich.getIngredients()));
+        mPlaceOfOrigin.setText(mSandwich.getPlaceOfOrigin());
+        mDescription.setText(mSandwich.getDescription());
+    }
 
+    /**
+     * Helper Method to join Strings in a List with ","
+     */
+    private String joinStringsInList(List<String> list) {
+        return TextUtils.join(", ", list);
     }
 }
