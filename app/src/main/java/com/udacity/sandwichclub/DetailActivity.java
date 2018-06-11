@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +22,10 @@ public class DetailActivity extends AppCompatActivity {
 
     private Sandwich mSandwich;
 
-    private TextView mAlsoKnownAs, mIngredients, mPlaceOfOrigin, mDescription;
+    private TextView mAlsoKnownAs, mAlsoKnownAsLabel;
+    private TextView mIngredients, mIngredientsLabel;
+    private TextView mPlaceOfOrigin, mPlaceOfOriginLabel;
+    private TextView mDescription, mDescriptionLabel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,9 +35,13 @@ public class DetailActivity extends AppCompatActivity {
         ImageView ingredientsIv = findViewById(R.id.image_iv);
 
         mAlsoKnownAs = findViewById(R.id.also_known_tv);
+        mAlsoKnownAsLabel = findViewById(R.id.also_known_label);
         mIngredients = findViewById(R.id.ingredients_tv);
+        mIngredientsLabel = findViewById(R.id.ingredients_label);
         mPlaceOfOrigin = findViewById(R.id.origin_tv);
+        mPlaceOfOriginLabel = findViewById(R.id.origin_label);
         mDescription = findViewById(R.id.description_tv);
+        mDescriptionLabel = findViewById(R.id.description_label);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -73,10 +81,44 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void populateUI() {
-        mAlsoKnownAs.setText(joinStringsInList(mSandwich.getAlsoKnownAs()));
-        mIngredients.setText(joinStringsInList(mSandwich.getIngredients()));
-        mPlaceOfOrigin.setText(mSandwich.getPlaceOfOrigin());
-        mDescription.setText(mSandwich.getDescription());
+        // alsoKnownAs
+        List<String> alsoKnownAs = mSandwich.getAlsoKnownAs();
+        if (alsoKnownAs != null && !alsoKnownAs.isEmpty()) {
+            showView(mAlsoKnownAs);
+            showView(mAlsoKnownAsLabel);
+            mAlsoKnownAs.setText(joinStringsInList(alsoKnownAs));
+        }
+
+        // ingredients
+        List<String> ingredients = mSandwich.getIngredients();
+        if (ingredients != null && !ingredients.isEmpty()) {
+            showView(mIngredients);
+            showView(mIngredientsLabel);
+            mIngredients.setText(joinStringsInList(ingredients));
+        }
+
+        // placeOfOrigin
+        String placeOfOrigin = mSandwich.getPlaceOfOrigin();
+        if (!TextUtils.isEmpty(placeOfOrigin)) {
+            showView(mPlaceOfOrigin);
+            showView(mPlaceOfOriginLabel);
+            mPlaceOfOrigin.setText(placeOfOrigin);
+        }
+
+        // description
+        String description = mSandwich.getDescription();
+        if (!TextUtils.isEmpty(description)) {
+            showView(mDescription);
+            showView(mDescriptionLabel);
+            mDescription.setText(description);
+        }
+    }
+
+    /**
+     * Helper method to show view
+     */
+    private void showView(View view) {
+        view.setVisibility(View.VISIBLE);
     }
 
     /**

@@ -65,7 +65,7 @@ public class JsonUtils {
             String image = jsonObject.getString(IMAGE);
 
             // Extract the JSONArray from ingredients object
-            JSONArray ingredientsArray = name.getJSONArray(INGREDIENTS);
+            JSONArray ingredientsArray = jsonObject.getJSONArray(INGREDIENTS);
 
             // Convert the JSONArray to ArrayList
             List<String> ingredientsList = new ArrayList<>();
